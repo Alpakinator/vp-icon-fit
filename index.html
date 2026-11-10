@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vox Populi icon fit: before and after</title>
+<style>
+:root{--bg:#14161a;--panel:#1d2026;--line:#2e333c;--text:#e6e3da;--dim:#9a988f;--gold:#d9b76a;--before:#ff9d85;--after:#8fe6a0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,"Segoe UI",sans-serif}
+header{padding:18px 22px 6px;max-width:1500px;margin:auto}
+h1{font-size:22px;margin:0 0 6px;color:var(--gold);font-weight:600}
+header p{margin:4px 0;color:var(--dim);max-width:1100px}
+header b{color:var(--text);font-weight:600}
+.bar{position:sticky;top:0;z-index:5;background:rgba(20,22,26,.96);border-bottom:1px solid var(--line);padding:8px 22px}
+.bar .in{max-width:1500px;margin:auto;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;max-width:1500px;margin:0 auto 8px}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--text);padding:4px 10px;border-radius:14px;cursor:pointer;font-size:13px}
+.tab small{color:var(--dim)}
+.tab.on{border-color:var(--gold);color:var(--gold)}
+label{color:var(--dim);font-size:13px;display:flex;gap:6px;align-items:center}
+select,input[type=search]{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 6px;font:inherit}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{background:var(--panel);color:var(--text);border:0;padding:4px 10px;cursor:pointer;font:inherit;font-size:13px}
+.seg button.on{background:var(--gold);color:#1a1405}
+main{max-width:1500px;margin:auto;padding:14px 22px 60px;display:flex;flex-wrap:wrap;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;cursor:pointer}
+.card:hover{border-color:#5a6170}
+.card h3{margin:0;font-size:14px;font-weight:600}
+.card .sub{color:var(--dim);font-size:12px;margin-bottom:6px}
+.row{display:flex;gap:10px;align-items:flex-end}
+.col{display:flex;flex-direction:column;align-items:center;gap:3px}
+.cap{font-size:11px;color:var(--dim)}
+.cap.b{color:var(--before)}.cap.a{color:var(--after)}
+canvas{display:block;image-rendering:pixelated;border-radius:2px}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:11px;border:1px solid var(--line);border-radius:10px;padding:0 7px;color:var(--dim)}
+.chip.ch{color:var(--gold);border-color:#6e5b2c}
+.chip.cur{background:#3a3220}
+.num{font:11px/1.4 ui-monospace,Menlo,Consolas,monospace;margin-top:6px;color:var(--dim)}
+.num .b{color:var(--before)}.num .a{color:var(--after)}
+#more{width:100%;text-align:center;padding:20px;color:var(--dim)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;z-index:20;overflow:auto;padding:30px}
+#modal.on{display:block}
+#mbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;max-width:1380px;margin:auto;padding:18px 22px}
+#mbox h2{margin:0;color:var(--gold);font-size:18px}
+#mbox .x{float:right;cursor:pointer;color:var(--dim);font-size:22px;line-height:1}
+.vrow{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.vrow h4{margin:0 0 8px;font-size:14px}
+.vrow h4 span{color:var(--gold);font-weight:400;margin-left:8px}
+.vrow .row{flex-wrap:wrap;gap:18px}
+.grp{display:flex;flex-direction:column;gap:4px}
+.grp>.cap{font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--dim);font-size:12px;margin-top:6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<header>
+<h1>Vox Populi icon fit: every changed icon, before and after</h1>
+<p>Each card shows one icon. <b>In game</b> draws it exactly as the game does: the ring frame first, the icon on top at offset 0,0, at its real pixel size, next to a magnified copy with hard pixels. The magnified copy carries the guides: crosshair through the standard centre, the standard and the measured outline, and for font icons the 1 px margin in blue (switch them off with <b>Guides off</b>). <b>In atlas</b> shows the raw atlas cell on a checkerboard instead. Click a card to see every size of that icon at once.</p>
+<p><b>Flip</b> swaps before and after in place, which shows a half-pixel move far better than side by side. Images are the actual atlas pixels (decoded from the DXT/BGRA files), stored losslessly.</p>
+<div class="legend">
+<span><i class="sw" style="background:#3cff5a"></i>base game standard (disc, or allowed zone)</span>
+<span><i class="sw" style="background:#ff463c"></i>measured (disc, or art box)</span>
+<span><i class="sw" style="background:#ffdc00"></i>alpha centroid / improvement glass disc standard</span>
+<span><i class="sw" style="background:#0078ff"></i>font icons: the 1 px margin that must stay empty (there, red box = all visible art, green box = solid art)</span>
+<span><i class="sw" style="background:#fff"></i>faint cross: standard centre; white edge: the cell the game reads</span>
+</div>
+</header>
+<div class="bar">
+<div class="tabs" id="tabs"></div>
+<div class="in">
+<div class="seg" id="view"><button data-v="game" class="on">In game</button><button data-v="atlas">In atlas, with guides</button></div>
+<div class="seg" id="mode"><button data-v="side" class="on">Side by side</button><button data-v="flip">Flip</button></div>
+<div class="seg" id="guides"><button data-v="on" class="on">Guides on</button><button data-v="off">Guides off</button></div>
+<label>Size <select id="size"><option value="0">largest changed</option><option>256</option><option>128</option><option>80</option><option>64</option><option>45</option><option>32</option></select></label>
+<label>Frames <select id="frames"><option value="pr">before: game's frame, after: fitted frame</option><option value="old">game's frame for both</option><option value="new">fitted frame for both</option><option value="none">no frame</option></select></label>
+<label>Sort <select id="sort"><option value="atlas">atlas order</option><option value="sev">largest misfit first</option><option value="name">name</option></select></label>
+<input type="search" id="q" placeholder="search name or atlas">
+<span id="count" class="cap"></span>
+</div>
+</div>
+<main id="main"></main>
+<div id="modal"><div id="mbox"></div></div>
+<script>
+const COL={g:'rgba(60,255,90,.85)',r:'rgba(255,70,60,.9)',y:'rgba(255,220,0,.9)'};
+const BG='#474b57', PAGE=48;
+let D, FR, state={grp:'All',view:'game',mode:'side',size:0,frames:'pr',sort:'atlas',q:'',guides:'on'}, shown=0, list=[], flips=new Set(), phase=1;
+const imgs=new Map();
+function load(id){ if(!imgs.has(id)) imgs.set(id,new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src='img/'+id+'.webp';})); return imgs.get(id); }
+const el=(t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c; if(txt!=null)e.textContent=txt; return e;};
+function zoomFor(v,target){ return Math.max(1,Math.round(target/Math.max(v.w,v.h))); }
+
+// one icon variant drawn as the game draws it, at 1:1 on a w x h scratch canvas
+function gameNative(img,it,v,which){
+  const c=document.createElement('canvas'); c.width=v.w; c.height=v.h; const x=c.getContext('2d');
+  x.fillStyle=BG; x.fillRect(0,0,v.w,v.h);
+  if(it.pre){ x.drawImage(img,v.x,(2+which)*it.H,v.w,v.h,0,0,v.w,v.h); return c; }
+  if(v.fr && state.frames!=='none'){
+    const fw=state.frames==='pr'?which:(state.frames==='old'?0:1);
+    x.drawImage(FR,D.frames[v.fr],fw*256,v.s,v.s,0,0,v.s,v.s);
+  }
+  x.drawImage(img,v.x,which*it.H,v.w,v.h,0,0,v.w,v.h); return c;
+}
+function drawGame(cv,img,it,v,which,z){
+  cv.width=v.w*z; cv.height=v.h*z; const x=cv.getContext('2d'); x.imageSmoothingEnabled=false;
+  x.drawImage(gameNative(img,it,v,which),0,0,v.w*z,v.h*z);
+  if(state.guides==='on'&&z>1) guides(x,v,which,z,v.w*z,v.h*z);
+}
+function drawAtlas(cv,img,it,v,which,z){
+  const W=v.w*z,H=v.h*z; cv.width=W; cv.height=H; const x=cv.getContext('2d'); x.imageSmoothingEnabled=false;
+  const q=Math.max(8,z*2); for(let j=0;j<H;j+=q)for(let i=0;i<W;i+=q){x.fillStyle=((i/q+j/q)&1)?'#5a5d66':'#6c6f79';x.fillRect(i,j,q,q);}
+  x.drawImage(img,v.x,which*it.H,v.w,v.h,0,0,W,H);
+  guides(x,v,which,z,W,H);
+}
+function guides(x,v,which,z,W,H){
+  x.lineWidth=1; x.strokeStyle='rgba(255,255,255,.45)'; x.strokeRect(.5,.5,W-1,H-1);
+  for(const g of v.g[which]){
+    if(g[0]==='cross'){x.strokeStyle='rgba(255,255,255,.35)';x.beginPath();x.moveTo(0,g[2]*z);x.lineTo(W,g[2]*z);x.moveTo(g[1]*z,0);x.lineTo(g[1]*z,H);x.stroke();}
+    else if(g[0]==='circle'){x.strokeStyle=COL[g[4]];x.beginPath();x.arc(g[1]*z,g[2]*z,g[3]*z,0,7);x.stroke();}
+    else if(g[0]==='box'){x.strokeStyle=COL[g[5]];x.strokeRect(g[1]*z+.5,g[2]*z+.5,(g[3]-g[1])*z-1,(g[4]-g[2])*z-1);}
+    else if(g[0]==='dot'){x.fillStyle=COL[g[3]];x.beginPath();x.arc(g[1]*z,g[2]*z,3,0,7);x.fill();}
+    else if(g[0]==='ring'){x.fillStyle='rgba(0,120,255,.42)';x.fillRect(0,0,W,z);x.fillRect(0,H-z,W,z);x.fillRect(0,z,z,H-2*z);x.fillRect(W-z,z,z,H-2*z);}
+  }
+}
+// a before/after pair (or one flipping canvas). kind: 'game' | 'atlas'
+function pair(img,it,v,kind,z){
+  const draw=kind==='game'?drawGame:drawAtlas, row=el('div','row');
+  if(state.mode==='flip'){
+    const col=el('div','col'), cv=el('canvas'), cap=el('div','cap');
+    const f=p=>{draw(cv,img,it,v,p,z); cap.textContent=p?'after':'before'; cap.className='cap '+(p?'a':'b');};
+    f(phase); cv._flip=f; flips.add(cv); col.append(cv,cap); row.append(col);
+  } else for(const w of [0,1]){
+    const col=el('div','col'), cv=el('canvas'); draw(cv,img,it,v,w,z);
+    col.append(cv,el('div','cap '+(w?'a':'b'),w?'after':'before')); row.append(col);
+  }
+  return row;
+}
+function pickVariant(it){
+  if(state.size) return it.v.find(v=>v.s===state.size);
+  return it.v.find(v=>v.ch)||it.v[0];
+}
+function numbers(v){ const n=el('div','num'); n.append(el('div','b','before  '+v.n[0]),el('div','a','after   '+v.n[1])); return n; }
+function card(it){
+  const c=el('div','card'), v=pickVariant(it); c.append(el('h3',null,it.label),el('div','sub',it.sub));
+  const body=el('div','row'); body.style.minHeight=Math.min(300,v.h*zoomFor(v,256))+'px'; c.append(body);
+  const chips=el('div','chips');
+  for(const u of it.v) chips.append(el('span','chip'+(u.ch?' ch':'')+(u===v?' cur':''),(u.px||u.font?u.w+'×'+u.h:u.s+' px')+(u.ch?' changed':' same')));
+  c.append(chips,numbers(v)); c.onclick=()=>openModal(it);
+  c._fill=()=>load(it.id).then(img=>{ body.textContent=''; body.style.minHeight='';
+    if(state.view==='game'){ body.append(pair(img,it,v,'game',1)); if(zoomFor(v,256)>1) body.append(pair(img,it,v,'game',zoomFor(v,256))); else if(state.guides==='on') body.append(pair(img,it,v,'game',2)); }
+    else body.append(pair(img,it,v,'atlas',zoomFor(v,256)));
+  });
+  return c;
+}
+const io=new IntersectionObserver(es=>{for(const e of es) if(e.isIntersecting){ if(e.target.id==='more') more(); else {io.unobserve(e.target); e.target._fill();} }},{rootMargin:'500px'});
+function more(){
+  const m=document.getElementById('main'), end=document.getElementById('more'); if(end) end.remove();
+  for(const it of list.slice(shown,shown+PAGE)){ const c=card(it); m.append(c); io.observe(c); }
+  shown=Math.min(list.length,shown+PAGE);
+  if(shown<list.length){ const e=el('div',null,'loading more…'); e.id='more'; m.append(e); io.observe(e); }
+}
+function readHash(){
+  for(const kv of location.hash.slice(1).split('&')){ const [k,v]=kv.split('='); if(k&&v!=null) state[k]=k==='size'?+v:decodeURIComponent(v); }
+  for(const [id,key] of [['view','view'],['mode','mode'],['guides','guides']]) for(const o of document.getElementById(id).children) o.classList.toggle('on',o.dataset.v===state[key]);
+  for(const id of ['size','frames','sort']) document.getElementById(id).value=state[id]; document.getElementById('q').value=state.q;
+}
+function writeHash(){ const d={grp:'All',view:'game',mode:'side',size:0,frames:'pr',sort:'atlas',q:'',guides:'on'}; history.replaceState(null,'','#'+Object.keys(d).filter(k=>state[k]!==d[k]).map(k=>k+'='+encodeURIComponent(state[k])).join('&')); }
+function refresh(){
+  writeHash();
+  const q=state.q.toLowerCase();
+  list=D.items.filter(it=>(state.grp==='All'||it.grp===state.grp) && (!state.size||it.v.some(v=>v.s===state.size&&v.ch)) && (!q||(it.label+' '+it.sub+' '+it.grp).toLowerCase().includes(q)));
+  if(state.sort==='sev') list=[...list].sort((a,b)=>b.sev-a.sev); else if(state.sort==='name') list=[...list].sort((a,b)=>a.label.localeCompare(b.label));
+  document.getElementById('count').textContent=list.length+' icons';
+  flips.clear(); shown=0; document.getElementById('main').textContent=''; more();
+}
+function openModal(it){
+  const box=document.getElementById('mbox'); box.textContent='';
+  const x=el('span','x','×'); x.onclick=closeModal; box.append(x,el('h2',null,it.label),el('div','sub',it.grp+' · '+it.sub));
+  load(it.id).then(img=>{ for(const v of it.v){
+    const r=el('div','vrow'), h=el('h4',null,(v.px||v.font?v.w+'×'+v.h+' px':v.s+' px')+' · '+v.file+' · cell '+v.cell.join(', '));
+    h.append(el('span',null,v.ch?'changed':'not changed at this size')); r.append(h);
+    const row=el('div','row'), z=zoomFor(v,256), z2=zoomFor(v,512);
+    const g=(t,n)=>{const d=el('div','grp'); d.append(el('div','cap',t),n); return d;};
+    row.append(g('in game, real size',pair(img,it,v,'game',1)));
+    if(z>1) row.append(g('in game, ×'+z,pair(img,it,v,'game',z)));
+    row.append(g('atlas cell with guides, ×'+z2,pair(img,it,v,'atlas',z2)));
+    r.append(row,numbers(v)); box.append(r);
+  }});
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('on'); for(const c of [...flips]) if(!c.isConnected) flips.delete(c); }
+document.getElementById('modal').onclick=e=>{ if(e.target.id==='modal') closeModal(); };
+addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+setInterval(()=>{ phase^=1; for(const c of flips){ if(!c.isConnected){flips.delete(c);continue;} const r=c.getBoundingClientRect(); if(r.bottom>0&&r.top<innerHeight) c._flip(phase); } },700);
+function seg(id,key){ const s=document.getElementById(id); s.onclick=e=>{ const b=e.target.closest('button'); if(!b) return; for(const o of s.children) o.classList.toggle('on',o===b); state[key]=b.dataset.v; refresh(); }; }
+seg('view','view'); seg('mode','mode'); seg('guides','guides');
+for(const [id,key,num] of [['size','size',1],['frames','frames',0],['sort','sort',0]]) document.getElementById(id).onchange=e=>{ state[key]=num?+e.target.value:e.target.value; refresh(); };
+document.getElementById('q').oninput=e=>{ state.q=e.target.value; refresh(); };
+Promise.all([fetch('data.json').then(r=>r.json()),load('_frames')]).then(([d,f])=>{
+  D=d; FR=f; readHash(); const counts={}; for(const it of D.items) counts[it.grp]=(counts[it.grp]||0)+1;
+  const tabs=document.getElementById('tabs'), names=['All',...Object.keys(counts)];
+  for(const n of names){ const b=el('button','tab'+(n===state.grp?' on':'')); b.append(n+' ',el('small',null,n==='All'?D.items.length:counts[n]));
+    b.onclick=()=>{ state.grp=n; for(const o of tabs.children) o.classList.toggle('on',o===b); refresh(); }; tabs.append(b); }
+  refresh(); if(state.open){ const it=D.items.find(i=>i.id===state.open); if(it) openModal(it); }
+});
+</script>
+</body>
+</html>
