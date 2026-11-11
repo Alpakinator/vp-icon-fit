@@ -1,0 +1,52 @@
+<!doctype html><meta charset="utf-8"><title>Vox Populi icons: before #13557, after #13557, after #13561, now</title>
+<style>
+/* colours, font and rims of the Vox Populi Civilopedia */
+@font-face{font-family:Jost;src:url('Jost-400-Book.ttf') format('truetype');font-weight:400;font-display:swap}
+:root{--page:#0e1a28;--panel:#152638;--raised:#1c3350;--raised-hover:#234068;--well:#0a1420;--parchment:#e6d8b0;--parchment-bright:#f4eacc;--parchment-dim:#ac9f7c;--gold-bright:#e7c565;--gold-dark:#7e6226;--rim-top:#c2a66b;--rim-side:#8a6f42;--rim-bottom:#5a4422;--q-top:#857350;--q-side:#64553a;--q-bottom:#463a28;color-scheme:dark;scrollbar-color:var(--gold-dark) var(--well)}
+body{background:var(--page);color:var(--parchment);font:400 15px/1.4 Jost,system-ui,sans-serif;font-synthesis:none;margin:0}
+header{position:sticky;top:0;background:var(--panel);padding:6px 8px;z-index:5;border-bottom:2px solid var(--rim-side);box-shadow:0 1px 0 var(--rim-bottom)}
+h1{font-size:23px;font-weight:400;line-height:1.2;color:var(--parchment-bright);margin:0 0 6px}
+select,input:not([type=checkbox]){font:inherit;background:var(--well);color:inherit;border:2px solid;border-color:var(--q-top) var(--q-side) var(--q-bottom);border-radius:6px;padding:2px 6px;margin-right:6px}
+select:hover,input:not([type=checkbox]):hover,select:focus,input:not([type=checkbox]):focus{border-color:var(--rim-top) var(--rim-side) var(--rim-bottom);outline:0}
+input[type=checkbox]{accent-color:var(--gold-bright)}label{margin-right:6px}
+::selection{background:var(--gold-dark);color:var(--parchment-bright)}
+.it{padding:6px 8px;margin:6px;background:var(--panel);border:2px solid;border-color:var(--rim-top) var(--rim-side) var(--rim-bottom);border-radius:6px}
+.nm{color:var(--gold-bright)}.sub{color:var(--parchment-dim);font-size:13px;margin:2px 0 6px}
+.badge{display:inline-block;padding:0 7px;border-radius:9px;font-size:13px;margin-left:8px;color:var(--parchment-bright)}.new{background:#2c6a45}.m2{background:#4a5a78}.pr{background:#7e6226}.frame{background:#2f5a94}.same{background:var(--raised);color:var(--parchment-dim)}
+.tag{display:inline-block;background:var(--raised);border-radius:4px;padding:0 6px;margin:0 4px 3px 0;font-size:13px}
+.cols{display:flex;gap:6px;flex-wrap:wrap}.col{background:var(--well);padding:6px;border-radius:6px}.col div{font-size:13px;color:var(--parchment-dim);margin-bottom:4px}canvas{display:block}canvas.px{image-rendering:pixelated}
+#count{color:var(--parchment-dim);margin-left:6px}
+header{display:flex;gap:12px;align-items:center}.hl{flex:1;min-width:0}.hl h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hl select{width:130px;max-width:22%}@supports (field-sizing:content){.hl select{width:auto;field-sizing:content;max-width:260px}}#q{width:150px}
+.tg{display:flex;flex-direction:column;flex:none;font-size:13px;line-height:1.35}.tg label{margin:0;white-space:nowrap}
+.ig{margin-top:6px}.ig img{display:block;width:calc(629px / var(--dpr,1));height:calc(256px / var(--dpr,1));object-fit:none;object-fit:cover}
+</style>
+<header><div class="hl"><h1>Every icon of the base game and Vox Populi: before #13557 · after #13557 · after #13561 (merged) · now (this PR)</h1>
+<select id="src"><option value="">all sources</option></select><select id="fam"><option value="">all kinds</option></select>
+<select id="st"></select>
+<select id="ch"><option value="">any change</option><option value="edge">outer edge smoothed</option><option value="shadow">inner shadow</option><option value="trim">leftover trimmed</option><option value="gap">scaled to close a gap</option><option value="crop">cut to the standard circle</option><option value="game">has game screenshots</option></select>
+<select id="zoom"><option value="0">1:1 (as in game)</option><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option></select>
+<input id="q" placeholder="search name"><span id="count"></span></div>
+<div class="tg"><label><input type="checkbox" id="sm" checked> smooth scaling</label><label><input type="checkbox" id="fr" checked> draw the frames and guides</label><label><input type="checkbox" id="hm"> show only #13561 and this PR</label></div></header>
+<div id="list"></div>
+<script>document.documentElement.style.setProperty('--dpr',window.devicePixelRatio||1);
+
+const ST={new:'changed in this PR',m2:'icon changed in #13561',pr:'icon changed in #13557 only',frame:'icon not changed, only its frame',same:'not changed'},COL=['before #13557','after #13557','after #13561 (merged)','now (this PR)'],IR=k=>k,FR=k=>k;
+const SC=['base game circle (before #13561)','after #13561 (merged)','now (this PR)'],sel=t=>/LEADER/.test(t.fam)&&t.v.some(v=>v.s==128);let D,selciv=new Image(),frames=new Image(),shown=0,flt=[];const $=id=>document.getElementById(id),list=$('list');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);draw(e.target)}}),{rootMargin:'600px'});
+const hid=()=>$('hm').checked,eff=t=>t.st;
+function stopts(){const s=$('st'),keep=s.value;s.innerHTML='<option value="">any status</option>';['new','m2','pr','frame','same'].forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=ST[k];s.appendChild(o)});s.value=[...s.options].some(o=>o.value==keep)?keep:''}
+function draw(el){const t=el._t,img=new Image();img.onload=()=>{const dpr=window.devicePixelRatio||1,zs=+$('zoom').value,css=zs?zs:1/dpr,z=zs?Math.max(1,Math.round(zs*dpr)):1,sm=$('sm').checked&&!!zs&&z!=zs*dpr?true:($('sm').checked&&!!zs),fr=$('fr').checked;el.querySelectorAll('canvas[data-s]').forEach(c=>{const j=+c.dataset.s,v=t.v.find(v=>v.s==128);c.width=c.height=128*z;c.style.width=c.style.height=(128*css)+'px';c.className=sm?'':'px';const x=c.getContext('2d');x.imageSmoothingEnabled=sm;x.imageSmoothingQuality='high';if(fr)x.drawImage(selciv,j*128,0,128,128,0,0,128*z,128*z);x.drawImage(img,v.x,t.rows[3]*t.H,128,128,0,0,128*z,128*z)});el.querySelectorAll('canvas[data-k]').forEach(c=>{const k=+c.dataset.k;const W=t.v.reduce((a,v)=>a+(v.w||v.s),0);c.width=W*z;c.height=t.H*z;c.style.width=(W*css)+'px';c.style.height=(t.H*css)+'px';c.className=sm?'':'px';const x=c.getContext('2d');x.imageSmoothingEnabled=sm;x.imageSmoothingQuality='high';
+ t.v.forEach(v=>{const w=v.w||v.s,g=fr&&!v.fr&&t.fam!='frames',X=v.x*z,Wd=w*z,Hd=v.s*z,tw=Wd%2?1:2,th=Hd%2?1:2,cx=X+(Wd-tw)/2,cy=(Hd-th)/2,L=Math.max(2,Math.round(Math.min(Wd,Hd)*.12));if(fr&&v.fr)x.drawImage(frames,D.fx[v.s],FR(k)*256,v.s,v.s,v.x*z,0,v.s*z,v.s*z);
+  if(g){x.fillStyle='rgba(255,255,255,.22)';x.fillRect(cx,0,tw,Hd);x.fillRect(X,cy,Wd,th);x.fillStyle='rgba(231,197,101,.6)';x.fillRect(X,0,Wd,1);x.fillRect(X,Hd-1,Wd,1);x.fillRect(X,1,1,Hd-2);x.fillRect(X+Wd-1,1,1,Hd-2)}
+  x.drawImage(img,v.x,t.rows[IR(k)]*t.H,w,v.s,v.x*z,0,w*z,v.s*z);
+  if(g){x.fillStyle='rgba(255,255,255,.75)';x.fillRect(cx,0,tw,L);x.fillRect(cx,Hd-L,tw,L);x.fillRect(X,cy,L,th);x.fillRect(X+Wd-L,cy,L,th)}})})};img.src='img/'+t.id+'.webp'}
+function row(t){const el=document.createElement('div');el.className='it';el._t=t;
+ el.innerHTML=`<span class="nm"></span><span class="badge ${eff(t)}">${ST[eff(t)]}</span><div class="sub"></div><div class="tags"></div>${sel(t)?`<div class="cols">${SC.map((n,j)=>`<div class="col"><div>Select Civilization, 128 px · ${n}</div><canvas data-s="${j}"></canvas></div>`).join('')}</div>`:''}<div class="cols">${(hid()?[2,3]:[0,1,2,3]).map((k,j,a)=>`<div class="col"><div>${COL[k]}${j&&t.rows[IR(k)]==t.rows[IR(a[j-1])]?' · icon same as left':''}</div><canvas data-k="${k}"></canvas></div>`).join('')}</div>${t.g?`<div class="cols ig"><div class="col"><div>screenshot from the game · before #13557</div><img loading="lazy" src="img/g_${t.id}.webp" style="object-position:0 0"></div><div class="col"><div>screenshot from the game · after #13561 (merged)</div><img loading="lazy" src="img/g_${t.id}.webp" style="object-position:0 100%"></div></div>`:''}`;
+ el.querySelector('.nm').textContent=t.label;el.querySelector('.sub').textContent=`${t.src} · ${t.fam} · ${t.atlas} #${t.i} · sizes ${t.v.map(v=>v.s).join(', ')} px`;
+ const tg=el.querySelector('.tags');t.tags.forEach(s=>{const b=document.createElement('span');b.className='tag';b.textContent=s;tg.appendChild(b)});io.observe(el);return el}
+function more(){const n=Math.min(flt.length,shown+60);for(;shown<n;shown++)list.appendChild(row(flt[shown]))}
+function apply(){const s=$('src').value,f=$('fam').value,st=$('st').value,ch=$('ch').value,q=$('q').value.toLowerCase();flt=D.items.filter(t=>(!ch||(t.ch||[]).includes(ch))&&(!s||t.src==s)&&(!f||t.fam==f)&&(!st||eff(t)==st)&&(!q||t.label.toLowerCase().includes(q)));list.innerHTML='';shown=0;$('count').textContent=flt.length+' icons';more()}
+addEventListener('scroll',()=>{if(innerHeight+scrollY>document.body.offsetHeight-1500)more()});
+fetch('data.json').then(r=>r.json()).then(d=>{D=d;const add=(id,vals)=>vals.forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;$(id).appendChild(o)});add('src',[...new Set(d.items.map(t=>t.src))]);add('fam',[...new Set(d.items.map(t=>t.fam))].sort());
+ ['src','fam','st','ch','zoom','fr','sm'].forEach(i=>$(i).onchange=apply);$('hm').onchange=()=>{stopts();apply()};stopts();const up=new URLSearchParams(location.search);['fam','zoom','q','st'].forEach(i=>{if(up.get(i))$(i).value=up.get(i)});$('q').oninput=apply;frames.onload=apply;selciv.onload=()=>{frames.src='img/_frames.webp'};selciv.src='img/_selciv.webp'});
+</script>
